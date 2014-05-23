@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-
+// NSManagerObject 被管理的数据记录
 @interface Entity : NSManagedObject
 
 @property (nonatomic, retain) NSString * title;

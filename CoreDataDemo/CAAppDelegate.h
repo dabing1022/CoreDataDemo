@@ -14,16 +14,17 @@
 @property (strong, nonatomic) UIWindow *window;
 @property (strong, nonatomic) CAViewController* viewController;
 
+// 被管理的数据模型
 @property (strong, nonatomic) NSManagedObjectModel* managedObjectModel;
+
+// 被管理的数据上下文
 @property (strong, nonatomic) NSManagedObjectContext* managedObjectContext;
+
+// 持久化存储协调器
 @property (strong, nonatomic) NSPersistentStoreCoordinator* persistentStoreCoordinator;
 
 
 - (void)saveContext;
 - (NSURL*)applicationDocDir;
-
-- (NSPersistentStoreCoordinator*)persistentStoreCoordinator;
-- (NSManagedObjectModel*)managedObjectModel;
-- (NSManagedObjectContext*)managedObjectContext;
 
 @end

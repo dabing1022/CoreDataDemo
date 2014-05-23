@@ -42,6 +42,8 @@
     [self.myDelegate saveContext];
 }
 
+// NSFetchRequest 获取数据的请求
+// NSEntityDescription 实体结构
 - (IBAction)queryDB:(id)sender {
     NSFetchRequest* request = [[NSFetchRequest alloc]init];
     NSEntityDescription* entity = [NSEntityDescription entityForName:@"Entity" inManagedObjectContext:self.myDelegate.managedObjectContext];
@@ -65,19 +67,6 @@
         NSLog(@"Title:%@", entity.title);
         NSLog(@"Content:%@", entity.body);
         NSLog(@"creationData:%@", entity.creationDate);
-    }
-}
-
--(void)updateEntry:(Entity*)entity
-{
-    [entity setTitle:self.titleTextField.text];
-    [entity setBody:self.contentTextField.text];
-    [entity setCreationDate:[NSDate date]];
-    
-    NSError *error;
-    BOOL isUpdateSuccess = [self.myDelegate.managedObjectContext save:&error ];
-    if (!isUpdateSuccess) {
-        NSLog(@"Error:%@,%@",error,[error userInfo]);
     }
 }
 

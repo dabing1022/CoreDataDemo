@@ -77,6 +77,8 @@
     return url;
 }
 
+// 后缀为.xcdatamodeld的包，里面是.xcdatamodel文件，用数据模型编辑器编辑
+// 编译后为.momd或.mom文件
 - (NSManagedObjectModel*)managedObjectModel
 {
     if (_managedObjectModel != nil) {
