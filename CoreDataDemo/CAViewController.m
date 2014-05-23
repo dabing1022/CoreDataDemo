@@ -1,0 +1,88 @@
+//
+//  CAViewController.m
+//  CoreDataDemo
+//
+//  Created by ChildhoodAndy on 14-5-22.
+//  Copyright (c) 2014年 ChildhoodAndy. All rights reserved.
+//
+
+#import "CAViewController.h"
+#import "Entity.h"
+#import "CAAppDelegate.h"
+
+@interface CAViewController ()
+
+@end
+
+@implementation CAViewController
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+	
+    self.myDelegate = (CAAppDelegate*)[[UIApplication sharedApplication] delegate];
+}
+
+
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+    
+    self.titleTextField = nil;
+    self.contentTextField = nil;
+}
+
+- (IBAction)addToDB:(id)sender {
+    Entity* entity = (Entity*)[NSEntityDescription insertNewObjectForEntityForName:@"Entity" inManagedObjectContext:self.myDelegate.managedObjectContext];
+    
+    [entity setValue:self.titleTextField.text forKey:@"title"];
+    [entity setValue:self.contentTextField.text forKey:@"body"];
+    [entity setValue:[NSDate date] forKey:@"creationDate"];
+    
+    [self.myDelegate saveContext];
+}
+
+- (IBAction)queryDB:(id)sender {
+    NSFetchRequest* request = [[NSFetchRequest alloc]init];
+    NSEntityDescription* entity = [NSEntityDescription entityForName:@"Entity" inManagedObjectContext:self.myDelegate.managedObjectContext];
+    [request setEntity:entity];
+    
+    NSSortDescriptor* sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"creationDate" ascending:NO];
+    NSArray* sortDescriptions = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
+    [request setSortDescriptors:sortDescriptions];
+    
+    NSError* error;
+    NSMutableArray* mutableFetchResult = [[self.myDelegate.managedObjectContext executeFetchRequest:request error:&error] mutableCopy];
+    if (mutableFetchResult == nil) {
+        NSLog(@"Error: %@, %@", error, [error userInfo]);
+    }
+    
+    self.entities = mutableFetchResult;
+    
+    NSLog(@"The count of entites: %i", [self.entities count]);
+    
+    for (Entity* entity in self.entities) {
+        NSLog(@"Title:%@", entity.title);
+        NSLog(@"Content:%@", entity.body);
+        NSLog(@"creationData:%@", entity.creationDate);
+    }
+}
+
+-(void)updateEntry:(Entity*)entity
+{
+    [entity setTitle:self.titleTextField.text];
+    [entity setBody:self.contentTextField.text];
+    [entity setCreationDate:[NSDate date]];
+    
+    NSError *error;
+    BOOL isUpdateSuccess = [self.myDelegate.managedObjectContext save:&error ];
+    if (!isUpdateSuccess) {
+        NSLog(@"Error:%@,%@",error,[error userInfo]);
+    }
+}
+
+- (IBAction)backgroundTapped:(id)sender {
+    [self.titleTextField resignFirstResponder];
+    [self.contentTextField resignFirstResponder];
+}
+@end
