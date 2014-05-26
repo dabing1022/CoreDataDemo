@@ -43,6 +43,11 @@
 }
 
 // NSFetchRequest 获取数据的请求
+// 1. setEntity 设置你要查询的数据对象的类型
+// 2. setPredicate 设置查询条件
+// 3. setFetchLimit 设置最大查询对象数目
+// 4. setSortDescriptors 设置查询结果的排序方法
+// 5. setAffectecStores 设置可以在哪些数据存储中查询
 // NSEntityDescription 实体结构
 - (IBAction)queryDB:(id)sender {
     NSFetchRequest* request = [[NSFetchRequest alloc]init];

@@ -16,6 +16,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    [self logPaths];
     return YES;
 }
 							
@@ -53,6 +54,77 @@
     }
 }
 
+- (void)logPaths
+{
+    // 1. 获取应用沙盒根路径
+    NSLog(@"app_home: %@", NSHomeDirectory());
+    
+    // 2. 获取Documents目录路径
+    NSArray* paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString* documentsDir = [paths objectAtIndex:0];
+    NSLog(@"app_home_doc: %@", documentsDir);
+    
+    // 3. 获取Library目录路径
+    paths = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);
+    NSString* libDir = [paths objectAtIndex:0];
+    NSLog(@"app_home_lib: %@", libDir);
+    
+    // 4. 获取Cache目录路径
+    paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+    NSString* cachePath = [paths objectAtIndex:0];
+    NSLog(@"app_home_cache: %@", cachePath);
+    
+    // 5. 获取Tmp目录路径
+    NSLog(@"app_home_tmp: %@", NSTemporaryDirectory());
+    
+    // 6. 创建文件夹
+    NSString* testDir = [documentsDir stringByAppendingPathComponent:@"test"];
+    BOOL success = [[NSFileManager defaultManager] createDirectoryAtPath:testDir withIntermediateDirectories:YES attributes:nil error:nil];
+    if (success) {
+        NSLog(@"文件夹创建成功");
+    }else {
+        NSLog(@"文件夹创建失败");
+    }
+    
+    // 7. 创建文件
+    NSString* testFilePath = [testDir stringByAppendingPathComponent:@"test.txt"];
+    success = [[NSFileManager defaultManager] createFileAtPath:testFilePath contents:nil attributes:nil];
+    if (success) {
+        NSLog(@"文件创建成功");
+    }else {
+        NSLog(@"文件创建失败");
+    }
+    
+    // 8. 写数据到文件
+    NSString* content = @"Hello World!!!";
+    success = [content writeToFile:testFilePath atomically:YES encoding:NSUTF8StringEncoding error:nil];
+    if (success) {
+        NSLog(@"文件写入成功");
+    }else {
+        NSLog(@"文件写入失败");
+    }
+    
+    // 9. 文件属性
+    NSDictionary* fileAttributes = [[NSFileManager defaultManager] attributesOfItemAtPath:testFilePath error:nil];
+    NSArray* keys = [fileAttributes allKeys];
+    int count = [keys count];
+    id key, value;
+    for (int i = 0; i < count; i++) {
+        key = [keys objectAtIndex:i];
+        value = [fileAttributes objectForKey:key];
+        NSLog(@"Key: %@ for value: %@", key, value);
+    }
+    
+    // 10. 删除文件
+    success = [[NSFileManager defaultManager] removeItemAtPath:testFilePath error:nil];
+    if (success) {
+        NSLog(@"文件删除成功");
+    }else {
+        NSLog(@"文件删除失败");
+    }
+}
+
+
 #pragma mark - CoreDataAbout
 
 - (void)saveContext
@@ -86,6 +158,7 @@
     }
     
     NSURL* modelURL = [[NSBundle mainBundle] URLForResource:@"Journal" withExtension:@"momd"];
+    NSLog(@"model url: %@", [modelURL path]);
     self.managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
     
     return self.managedObjectModel;

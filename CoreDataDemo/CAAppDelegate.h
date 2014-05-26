@@ -23,7 +23,7 @@
 // 持久化存储协调器
 @property (strong, nonatomic) NSPersistentStoreCoordinator* persistentStoreCoordinator;
 
-
+- (void)logPaths;
 - (void)saveContext;
 - (NSURL*)applicationDocDir;
 
